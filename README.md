@@ -20,12 +20,9 @@ llm_evaluation_ragas/
 │   ├── 01_installation/
 │   │   └── setup.py               # Verify installation
 │   ├── 02_basic_evaluation/
-│   │   ├── simple_eval.py         # SingleTurnSample evaluation
-│   │   └── dataset_eval.py        # Dataset-based evaluation
+│   │   └── simple_eval.py         # Prompt evaluation with @experiment()
 │   └── 03_rag_evaluation/
-│       ├── context_metrics.py     # Context precision/recall
-│       ├── faithfulness.py        # Faithfulness deep dive
-│       └── full_rag_eval.py       # Complete RAG evaluation
+│       └── simple_rag_eval.py     # RAG evaluation with @experiment()
 ├── data/
 │   └── sample_qa_pairs.json       # Sample evaluation data
 ├── docs/
@@ -39,11 +36,11 @@ llm_evaluation_ragas/
 # 1. Verify installation
 python examples/01_installation/setup.py
 
-# 2. Run basic evaluation
+# 2. Run prompt evaluation
 python examples/02_basic_evaluation/simple_eval.py
 
-# 3. Run full RAG evaluation
-python examples/03_rag_evaluation/full_rag_eval.py
+# 3. Run RAG evaluation
+python examples/03_rag_evaluation/simple_rag_eval.py
 ```
 
 ## Implemented Phases

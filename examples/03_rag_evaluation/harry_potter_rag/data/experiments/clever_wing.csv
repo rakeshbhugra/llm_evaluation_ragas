@@ -1,0 +1,4 @@
+query,grading_notes,response,faithfulness,correctness
+Who is Harry Potter's best friend?,- Ron Weasley or Hermione Granger,"The context provided does not specify who Harry Potter's best friend is. However, in the broader Harry Potter series, Harry's best friends are Hermione Granger and Ron Weasley.",0.5,pass
+What is the address where the Dursleys live?,"- 4 Privet Drive, Little Whinging, Surrey","The Dursleys live at number four, Privet Drive.",1.0,fail
+What is Harry Potter's birthday?,- July 31,Harry Potter's birthday is July 31.,1.0,pass

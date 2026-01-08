@@ -5,15 +5,18 @@ description = "RAGAS evaluation framework learning examples"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "ragas>=0.2",
-    "langchain-openai>=0.1",
-    "langchain-core>=0.2",
-    "openai>=1.0",
-    "datasets>=2.0",
+    "chromadb>=1.4.0",
+    "datasets>=4.4.2",
+    "langchain-core>=1.2.6",
+    "langchain-openai>=1.1.7",
+    "litellm>=1.80.12",
+    "openai>=2.14.0",
+    "pymupdf>=1.26.7",
+    "ragas>=0.4.2",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-    "pytest>=8.0",
-    "python-dotenv>=1.0",
+    "pytest>=9.0.2",
+    "python-dotenv>=1.2.1",
 ]

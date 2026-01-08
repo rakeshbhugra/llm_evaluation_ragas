@@ -1,0 +1,24 @@
+query,grading_notes,response,score
+How to install Ragas?,- install from pip using ragas[examples],"You can install Ragas using pip by running the following command in your terminal:
+
+```bash
+pip install ragas[examples]
+```",pass
+What are the main features of Ragas?,"- organized around experiments, datasets, and metrics.","Ragas, a foundational concept in Indian classical music, encompass several main features:
+
+1. **Melodic Framework**: A ragas provides a specific set of notes (svaras) and the relationships between them, usually derived from a scale like the major or minor scale but uniquely organized.
+
+2. **Arohana and Avarohana**: Each raga has an ascending (Arohana) and descending (Avarohana) structure, defining the order in which notes are played in each direction.
+
+3. **Vadi and Samvadi**: The raga features a dominant note (Vadi) which is the most emphasized during performance, alongside a second-most important note (Samvadi) that complements the Vadi.
+
+4. **Pakad**: A catchy melodic phrase or motif that encapsulates the essence of the raga is known as the Pakad. It serves as a mnemonic device for musicians.
+
+5. **Rasa and Emotion**: Each raga is associated with specific emotions or feelings (Rasa), allowing performers to evoke particular moods in their audience.
+
+6. **Time of Day/Season**: Many ragas are traditionally tied to specific times of day or seasons, enhancing their emotional impact when performed at the appropriate times.
+
+7. **Improvisation**: While ragas provide a framework, they also allow for significant improvisation, enabling musicians to express individuality and creativity.
+
+These features together define the unique character of each raga, making the exploration of ragas a profound experience in Indian music.",fail
+What is Ragas?,- Ragas is a library for evaluating LLM applications.,"Ragas is a library designed for evaluating LLM (Large Language Model) applications. It is structured around three main concepts: experiments, datasets, and metrics. Within this framework, the DiscreteMetric allows users to create evaluation metrics based on LLMs, facilitating the assessment of their performance in various applications.",pass

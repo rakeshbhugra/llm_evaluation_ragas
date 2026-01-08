@@ -1,0 +1,7 @@
+text,label,response,score
+The movie was terrible and boring.,negative,negative,pass
+Absolutely amazing! Best movie of the year.,positive,positive,pass
+A masterpiece of storytelling.,positive,positive,pass
+"It was an average film, nothing special.",negative,negative,pass
+Waste of time. Do not watch.,negative,negative,pass
+I loved the movie! It was fantastic.,positive,positive,pass

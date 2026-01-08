@@ -1,155 +1,110 @@
 """
-Simple RAGAS Evaluation with SingleTurnSample
+Simple Prompt Evaluation with LiteLLM + Pydantic
 
-This script demonstrates basic evaluation using RAGAS with a single
-question-answer pair. This is the simplest form of RAGAS evaluation.
+This script demonstrates a basic evaluation approach using
+litellm with pydantic structured output.
 
-Phase 1: Setup & Basic Evaluation
+Example: Movie review sentiment classifier
 """
 
-import asyncio
-import os
+from dotenv import load_dotenv
+from typing import Literal
 
-from ragas import SingleTurnSample
-from ragas.llms import LangchainLLMWrapper
-from ragas.embeddings import LangchainEmbeddingsWrapper
-from ragas.metrics import faithfulness, answer_relevancy
-
-
-def create_llm_and_embeddings():
-    """Create LLM and embeddings wrappers for RAGAS."""
-    from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-
-    llm = LangchainLLMWrapper(ChatOpenAI(model="gpt-4o-mini"))
-    embeddings = LangchainEmbeddingsWrapper(OpenAIEmbeddings())
-
-    return llm, embeddings
+import litellm
+from pydantic import BaseModel, Field
+load_dotenv()
 
 
-def create_sample_data():
-    """Create a simple SingleTurnSample for evaluation."""
-    # Create a sample with question, answer, and retrieved contexts
-    sample = SingleTurnSample(
-        user_input="What is the capital of France?",
-        response="Paris is the capital of France. It is known for the Eiffel Tower.",
-        retrieved_contexts=[
-            "Paris is the capital and most populous city of France. "
-            "It has been an important city since the 3rd century.",
-            "The Eiffel Tower is a wrought-iron lattice tower on the "
-            "Champ de Mars in Paris, France.",
-        ],
+
+class SentimentOutput(BaseModel):
+    """Structured output for sentiment classification."""
+    sentiment: Literal["positive", "negative"] = Field(
+        description="The sentiment of the movie review"
     )
-    return sample
 
 
-async def evaluate_single_sample():
-    """Evaluate a single sample using RAGAS metrics."""
+def run_prompt(text: str) -> str:
+    """Run the sentiment classification prompt with structured output."""
+    response = litellm.completion(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a sentiment classifier. Classify movie reviews as positive or negative.",
+            },
+            {"role": "user", "content": text},
+        ],
+        response_format=SentimentOutput,
+    )
+    output = SentimentOutput.model_validate_json(response.choices[0].message.content)
+    return output.sentiment
+
+
+def evaluate(dataset: list[dict]) -> dict:
+    """Run evaluation on dataset."""
+    results = []
+    correct = 0
+
     print("=" * 60)
-    print("Simple RAGAS Evaluation - SingleTurnSample")
+    print("RUNNING EVALUATION")
     print("=" * 60)
 
-    # Create LLM and embeddings
-    print("\n1. Setting up LLM and embeddings...")
-    llm, embeddings = create_llm_and_embeddings()
+    for i, sample in enumerate(dataset, 1):
+        print(f"\n[{i}/{len(dataset)}] Evaluating...")
+        print(f"  Text: {sample['text'][:50]}...")
 
-    # Create sample
-    print("\n2. Creating sample data...")
-    sample = create_sample_data()
+        prediction = run_prompt(sample["text"])
+        is_correct = prediction == sample["label"]
 
-    print(f"\n   Question: {sample.user_input}")
-    print(f"   Answer: {sample.response}")
-    print(f"   Contexts: {len(sample.retrieved_contexts)} retrieved")
+        if is_correct:
+            correct += 1
+            status = "PASS"
+        else:
+            status = "FAIL"
 
-    # Evaluate faithfulness
-    print("\n3. Evaluating faithfulness...")
-    faithfulness_metric = faithfulness
-    faithfulness_metric.llm = llm
+        print(f"  Expected: {sample['label']}")
+        print(f"  Predicted: {prediction}")
+        print(f"  Result: {status}")
 
-    faithfulness_score = await faithfulness_metric.single_turn_ascore(sample)
-    print(f"   Faithfulness Score: {faithfulness_score:.4f}")
-
-    # Evaluate answer relevancy
-    print("\n4. Evaluating answer relevancy...")
-    relevancy_metric = answer_relevancy
-    relevancy_metric.llm = llm
-    relevancy_metric.embeddings = embeddings
-
-    relevancy_score = await relevancy_metric.single_turn_ascore(sample)
-    print(f"   Answer Relevancy Score: {relevancy_score:.4f}")
-
-    # Summary
-    print("\n" + "=" * 60)
-    print("Evaluation Summary")
-    print("=" * 60)
-    print(f"  • Faithfulness:      {faithfulness_score:.4f}")
-    print(f"  • Answer Relevancy:  {relevancy_score:.4f}")
-
-    # Interpretation
-    print("\n" + "-" * 60)
-    print("Score Interpretation:")
-    print("-" * 60)
-    print("  Scores range from 0.0 to 1.0")
-    print("  • 0.8 - 1.0: Excellent")
-    print("  • 0.6 - 0.8: Good")
-    print("  • 0.4 - 0.6: Fair")
-    print("  • 0.0 - 0.4: Poor")
+        results.append({
+            "text": sample["text"],
+            "expected": sample["label"],
+            "predicted": prediction,
+            "correct": is_correct
+        })
 
     return {
-        "faithfulness": faithfulness_score,
-        "answer_relevancy": relevancy_score,
+        "results": results,
+        "accuracy": correct / len(dataset),
+        "correct": correct,
+        "total": len(dataset)
     }
 
 
-def evaluate_with_hallucination():
-    """Demonstrate evaluation with a hallucinated answer."""
-    print("\n\n" + "=" * 60)
-    print("Evaluation with Hallucinated Answer")
-    print("=" * 60)
-
-    # Create a sample with hallucination (answer contains info not in context)
-    sample = SingleTurnSample(
-        user_input="What is the population of Paris?",
-        response="Paris has a population of 12 million people and is the "
-        "largest city in Europe.",  # Hallucination!
-        retrieved_contexts=[
-            "Paris is the capital of France.",
-            "Paris is known for its art museums and the Eiffel Tower.",
-        ],
-    )
-
-    print(f"\n   Question: {sample.user_input}")
-    print(f"   Answer: {sample.response}")
-    print("   Note: Answer contains hallucinated information!")
-
-    return sample
-
-
-async def main():
-    """Run simple evaluation examples."""
-    # Check API key
-    if not os.environ.get("OPENAI_API_KEY"):
-        print("Error: OPENAI_API_KEY not set")
-        print("Set it with: export OPENAI_API_KEY='your-key-here'")
-        return
-
-    print("\n" + "#" * 60)
-    print("# RAGAS Simple Evaluation Demo")
-    print("#" * 60)
-
-    # Run basic evaluation
-    results = await evaluate_single_sample()
-
-    # Show hallucination example structure (without running to save API calls)
-    hallucination_sample = evaluate_with_hallucination()
-    print("\n   (Skipping actual evaluation to save API calls)")
-    print("   To evaluate, use: faithfulness.single_turn_ascore(sample)")
-
-    print("\n" + "=" * 60)
-    print("Demo Complete!")
-    print("=" * 60)
-    print("\nNext: Run examples/02_basic_evaluation/dataset_eval.py")
-    print("      for dataset-based evaluation.")
+MOVIE_REVIEWS = [
+    {"text": "I loved the movie! It was fantastic.", "label": "positive"},
+    {"text": "The movie was terrible and boring.", "label": "negative"},
+    {"text": "It was an average film, nothing special.", "label": "negative"},
+    {"text": "Absolutely amazing! Best movie of the year.", "label": "positive"},
+    {"text": "Waste of time. Do not watch.", "label": "negative"},
+    {"text": "A masterpiece of storytelling.", "label": "positive"},
+]
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    print("\n" + "#" * 60)
+    print("# Movie Review Sentiment Evaluation")
+    print("# Using: litellm + pydantic structured output")
+    print("#" * 60)
+
+    summary = evaluate(MOVIE_REVIEWS)
+
+    print("\n" + "=" * 60)
+    print("SUMMARY")
+    print("=" * 60)
+    print(f"Accuracy: {summary['accuracy']:.1%} ({summary['correct']}/{summary['total']})")
+
+    print("\nDetailed Results:")
+    for r in summary["results"]:
+        status = "PASS" if r["correct"] else "FAIL"
+        print(f"  [{status}] {r['text'][:40]}... -> {r['predicted']}")
