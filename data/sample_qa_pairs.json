@@ -1,0 +1,49 @@
+[
+  {
+    "question": "What is machine learning?",
+    "answer": "Machine learning is a subset of artificial intelligence that enables systems to learn and improve from experience without being explicitly programmed.",
+    "contexts": [
+      "Machine learning (ML) is a subset of artificial intelligence (AI) that allows systems to automatically learn and improve from experience.",
+      "ML algorithms build models based on sample data to make predictions without being explicitly programmed."
+    ],
+    "reference": "Machine learning is a branch of AI focused on learning from data."
+  },
+  {
+    "question": "What is Python used for?",
+    "answer": "Python is used for web development, data science, machine learning, automation, and scripting tasks.",
+    "contexts": [
+      "Python is a versatile programming language used in web development, data analysis, and machine learning.",
+      "Python is popular for automation scripts and scientific computing applications."
+    ],
+    "reference": "Python is used for web development, data science, ML, and automation."
+  },
+  {
+    "question": "What is an API?",
+    "answer": "An API (Application Programming Interface) is a set of protocols and tools that allows different software applications to communicate with each other.",
+    "contexts": [
+      "API stands for Application Programming Interface.",
+      "APIs define how software components should interact and communicate.",
+      "APIs allow different applications to share data and functionality."
+    ],
+    "reference": "An API is an interface that enables software applications to communicate."
+  },
+  {
+    "question": "What is cloud computing?",
+    "answer": "Cloud computing is the delivery of computing services over the internet, including storage, processing, and software applications.",
+    "contexts": [
+      "Cloud computing delivers computing services—including servers, storage, databases, networking, software—over the internet.",
+      "The cloud offers faster innovation, flexible resources, and economies of scale."
+    ],
+    "reference": "Cloud computing provides computing services over the internet."
+  },
+  {
+    "question": "What is version control?",
+    "answer": "Version control is a system that records changes to files over time, allowing you to recall specific versions later.",
+    "contexts": [
+      "Version control systems track modifications to source code over time.",
+      "Git is the most widely used version control system today.",
+      "Version control enables collaboration and maintains history of changes."
+    ],
+    "reference": "Version control tracks changes to files and enables collaboration."
+  }
+]

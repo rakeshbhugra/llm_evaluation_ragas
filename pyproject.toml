@@ -1,7 +1,19 @@
 [project]
 name = "llm-evaluation-ragas"
 version = "0.1.0"
-description = "Add your description here"
+description = "RAGAS evaluation framework learning examples"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "ragas>=0.2",
+    "langchain-openai>=0.1",
+    "langchain-core>=0.2",
+    "openai>=1.0",
+    "datasets>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "python-dotenv>=1.0",
+]
